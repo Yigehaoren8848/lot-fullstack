@@ -16,6 +16,5 @@
   cd lot-fullstack  
   
   docker compose up  
-  ![GitHub标志](https://github.githubassets.com/images/modules/logos_page/Octocat.png)
 
 
