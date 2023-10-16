@@ -114,7 +114,7 @@ export default {
     initMqtt() {
       let that = this;
       let uniqueId = navigator.userAgent.replace(/[^\w]/gi, '');
-      const mqttClient = new Paho.MQTT.Client("192.168.1.169", 9001, uniqueId);
+      const mqttClient = new Paho.MQTT.Client("192.168.1.169", 9002, uniqueId);
       let i = 0;
       // 创建接选项
       const options = {

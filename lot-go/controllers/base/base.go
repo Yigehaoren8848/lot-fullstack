@@ -21,7 +21,7 @@ func (b *BaseController) Prepare() {
 	if b.MQTT == nil {
 
 		// MQTT 服务器地址和端口
-		broker := "tcp://192.168.1.169:1883"
+		broker := "tcp://192.168.1.169:1886"
 		uuidObj, err := uuid.NewUUID()
 		if err != nil {
 			fmt.Println("Error:", err)

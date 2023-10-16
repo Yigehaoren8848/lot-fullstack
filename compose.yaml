@@ -7,7 +7,7 @@ services:
       - go-net
     ports:
       - "1886:1883"
-      - "9001:9001"
+      - "9002:9001"
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
     command: mosquitto -c /mosquitto/config/mosquitto.conf
