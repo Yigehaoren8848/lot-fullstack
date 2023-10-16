@@ -4,28 +4,35 @@ import (
 	"github.com/astaxie/beego/orm"
 	"github.com/beego/beego/v2/adapter/logs"
 	"github.com/beego/beego/v2/core/config"
+	"github.com/beego/beego/v2/server/web"
 	_ "github.com/go-sql-driver/mysql"
-	userModel "meilian/models/sys/user"
 )
 
 func ConnectToDatabase() {
-	deployMethod, _ := config.String("deployMethod")
-	var dataSourse = ""
-	if deployMethod == "docker" {
-		dataSourse = "root:shitou19990225@tcp(mysql:3306)/youxue"
+
+	runmode, _ := config.String("runmode")
+	if runmode == "dev" {
+		web.LoadAppConfig("ini", "./conf/app.dev.conf")
 	} else {
-		dataSourse = "root:shitou19990225@tcp(localhost:3306)/youxue"
+		web.LoadAppConfig("ini", "./conf/app.prod.conf")
 	}
+	mqtt, _ := web.AppConfig.String("db.port")
+	print(mqtt)
+	// 获取数据库连接信息
+	dbHost, _ := web.AppConfig.String("db.host")
+	dbPort, _ := web.AppConfig.String("db.port")
+	dbUser, _ := web.AppConfig.String("db.user")
+	dbPassword, _ := web.AppConfig.String("db.password")
+	dbName, _ := web.AppConfig.String("db.name")
+
+	// 构建数据库连接字符串
+	dbConnStr := dbUser + ":" + dbPassword + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8"
 
 	// 注册数据库驱动
 	orm.RegisterDriver("mysql", orm.DRMySQL)
-	// 连接数据库
-	err := orm.RegisterDataBase("default", "mysql", dataSourse, 30, 100)
-	if err != nil {
-		print(err.Error())
-	}
-	orm.RegisterModel(new(userModel.User))
-	orm.Debug = true
+
+	// 注册数据库连接
+	err := orm.RegisterDataBase("default", "mysql", dbConnStr)
 
 	// 记录连接数据库的日志
 	if err != nil {
