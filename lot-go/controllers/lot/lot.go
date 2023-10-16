@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"meilian/constants"
 	controller "meilian/controllers/base"
-	models "meilian/models/mall"
+
 	"meilian/models/mqtt"
 	"meilian/utils/jwt"
 )
@@ -65,11 +65,4 @@ func (c *LotController) ControlEquimpment() {
 	var _ = c.MQTT.Publish("light", 0, false, msgJson)
 
 	c.ResponseJSON(2, "ok", msgs)
-}
-
-func (c *LotController) close() {
-	var courses []models.Courses
-
-	_, _ = c.O.QueryTable("courses").All(&courses, "Id", "Title", "Subtitle", "Time")
-	c.ResponseJSON(2, "ok", "")
 }
