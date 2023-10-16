@@ -1,0 +1,84 @@
+version: '3.2'
+services:
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: my-mosquitto
+    networks:
+      - go-net
+    ports:
+      - "1886:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    command: mosquitto -c /mosquitto/config/mosquitto.conf
+    
+  lot-golang:
+    image: digaultralman/lot-golang:latest # 使用 lot-golang 镜像
+    
+    ports:
+      - "2222:8080"  # 将容器的 8080 端口映射到主机的 8080 端口
+    
+    depends_on:
+       db:  # 表示backend服务依赖于db服务
+                      condition: service_healthy
+    networks:
+      - go-net
+    
+       
+    
+  # 其他服务配置...
+  db:
+    image: mysql:8.0.33
+    container_name: mysql
+    privileged: true
+    restart: always
+    
+    ports:
+      - "3307:3306"
+    volumes:
+      # 挂载数据目录
+      - "./mysql/data:/var/lib/mysql" 
+      # 挂载配置文件目录
+      - "./mysql/config:/etc/mysql/conf.d" 
+    environment:
+     
+      MYSQL_USER: zsl
+      MYSQL_ROOT_PASSWORD: shitou19990225
+      MYSQL_DATABASE: youxue
+      
+      MYSQL_PASSWORD: zsl123
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_ROOT_HOST: '%'
+    networks:
+      - go-net
+    healthcheck:
+        # 只有真正能执行查询命令，才算启动完成
+        test: '/usr/bin/mysql --user=root --password=shitou19990225 --execute "SHOW DATABASES;"'
+        interval: 10s
+        timeout: 20s
+        retries: 10
+    command:
+   
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+  lot-front:
+    image: nginx:1.20.1
+    volumes:
+      
+       - ./lot-vue/nginx.conf:/etc/nginx/nginx.conf
+       - ./lot-vue/elm/static:/front/elm/static
+       - ./lot-vue/elm/index.html:/front/index.html
+    ports:
+      - "1234:8088" 
+      - "1235:80" 
+
+    networks:
+      - go-net
+   
+networks: 
+    go-net:
+       
+        
+        
+        
