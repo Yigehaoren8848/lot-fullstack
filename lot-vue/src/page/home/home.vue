@@ -185,7 +185,7 @@ export default {
  
       if (!this.open) {
      
-        fetch("/open", {
+        fetch("/equipments/control", {
           order: "on",
         }).then((res) => {
           // console.log(res.data.msg);
@@ -196,7 +196,7 @@ export default {
           }
         });
       } else {
-        fetch("/open", {
+        fetch("/equipments/control", {
           order: "off  ",
         }).then((res) => {
           // console.log(res.data.msg);

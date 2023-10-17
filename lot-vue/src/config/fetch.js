@@ -26,7 +26,7 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 			headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json',
-				'token':getStore('auth')
+				'token':"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDAwNDYwNDIsImlkIjoiMTAwMTAiLCJyb2xlIjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIn0.xk8aT2Cy78f5znQfwzAAtTmJR5MeYmrZEeckbYbSFRQ"
 				
 			},
 			mode: "cors",

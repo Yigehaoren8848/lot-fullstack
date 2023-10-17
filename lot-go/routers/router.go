@@ -7,6 +7,6 @@ import (
 
 func init() {
 
-	web.Router("/open", &lot.LotController{}, "GET:ControlEquimpment")
+	web.Router("/ equipments/control", &lot.LotController{}, "GET:ControlEquimpment")
 	web.Router("/token", &lot.LotController{}, "GET:ResponseToken")
 }

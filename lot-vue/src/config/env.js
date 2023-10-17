@@ -14,10 +14,10 @@ let imgBaseUrl = '';
 
 if (process.env.NODE_ENV == 'development') {
     imgBaseUrl = '/img/';
-	baseUrl = 'http://localhost:2222'
+	baseUrl = 'http://192.168.1.169:8080' 
 
 }else if(process.env.NODE_ENV == 'production'){
-	baseUrl = 'http://localhost:2222'
+	baseUrl = 'http://192.168.1.169:2222'
     imgBaseUrl = '';
 }
 
