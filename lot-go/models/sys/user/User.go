@@ -1,12 +1,13 @@
 package user
 
 import (
+	"github.com/astaxie/beego/orm"
 	"time"
 )
 
 // User 是user表的数据模型
 type User struct {
-	Id            int       `orm:"column(id);auto"`
+	Id            int       `orm:"column(id);pk;auto"`
 	Openid        string    `orm:"column(openid);size(80);null"`
 	UserName      string    `orm:"column(user_name);size(50);null"`
 	Email         string    `orm:"column(email);size(120);null"`
@@ -22,4 +23,8 @@ type User struct {
 	Role          string    `orm:"column(role);size(5);null"`
 	Operate       string    `orm:"column(operate);size(5);null"`
 	Oprator       string    `orm:"column(oprator);size(50);null"`
+}
+
+func init() {
+	orm.RegisterModel(new(User))
 }

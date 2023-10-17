@@ -2,10 +2,7 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
-
-	"meilian/conf"
 	"meilian/constants"
 	controller "meilian/controllers/base"
 	userModels "meilian/models/sys/user"
@@ -21,11 +18,9 @@ type UserController struct {
 
 func (c *UserController) Login() {
 	requestBody := c.Ctx.Input.RequestBody
+	print(string(requestBody))
 	var loginParams userModels.User
 	err := json.Unmarshal(requestBody, &loginParams)
-
-	conf.LogAccessInfo("212", "123", "23", "dsfsdf")
-	logs.Info("my book is bought in the year of ", 2016)
 	if err != nil {
 		c.ResponseJSON(constants.GainPostDataError, err.Error(), "")
 		return

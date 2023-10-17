@@ -2,6 +2,7 @@ package lot
 
 import (
 	"encoding/json"
+	"github.com/beego/beego/v2/adapter/logs"
 	"meilian/constants"
 	controller "meilian/controllers/base"
 
@@ -63,6 +64,21 @@ func (c *LotController) ControlEquimpment() {
 		c.ResponseJSON(0, "params is error!", "")
 	}
 	var _ = c.MQTT.Publish("light", 0, false, msgJson)
+	logs.Info("" + "访问了日志接口")
+	//2.通知日志
+	logs.Notice("这是通知日志")
+	//3.警告日志
+	logs.Warn("这是警告日志")
+	//4.警告日志
+	logs.Alert("这是警告日志")
+	//5.错误日志
+	logs.Error("这是错误日志")
+	//6.重要的日志
+	logs.Critical("这是重要的日志")
+	//7.紧急日志
+	logs.Emergency("这是紧急日志")
+	//8.Debug日志
+	logs.Debug("这是调试日志")
 
 	c.ResponseJSON(2, "ok", msgs)
 }

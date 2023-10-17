@@ -16,8 +16,6 @@ func ConnectToDatabase() {
 	} else {
 		web.LoadAppConfig("ini", "./conf/app.prod.conf")
 	}
-	mqtt, _ := web.AppConfig.String("db.port")
-	print(mqtt)
 	// 获取数据库连接信息
 	dbHost, _ := web.AppConfig.String("db.host")
 	dbPort, _ := web.AppConfig.String("db.port")

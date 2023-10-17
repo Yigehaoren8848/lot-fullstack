@@ -13,11 +13,11 @@ func LogAccessInfo(ip, userAgent, method, url string) {
 func InitLogConfig() {
 	logs.EnableFuncCallDepth(true)
 	//get logConf conf
-	logPath := "/logs/app.log"
+	logPath := "logs/app.log"
 	maxsize := 10 * 1024 * 11024
 	maxDays := 7
 	//set common logger that saves all logConf
-	logConf := fmt.Sprintf(`{"filename":"%s","maxsize":%d,"daily":true,"maxdays":%d,"rotate":true,"level":%d}`, logPath, maxsize, maxDays, logs.LevelInfo)
+	logConf := fmt.Sprintf(`{"filename":"%s","maxsize":%d,"daily":true,"maxdays":%d,"rotate":true,"level":%d}`, logPath, maxsize, maxDays, logs.LevelDebug)
 	logs.SetLogger(logs.AdapterFile, logConf)
 	logs.SetLogger(logs.AdapterConsole)
 	// 设置日志异步输出（可选）
