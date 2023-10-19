@@ -84,10 +84,7 @@ func (c *UserController) Register() {
 	email := registerParams.Email
 	userNameLength := utf8.RuneCountInString(userName)
 	passwordLength := utf8.RuneCountInString(password)
-	if userName == "" {
-		c.ResponseJSON(constants.ParamErrorCode, "用户名不可为空！", "")
-		return
-	}
+
 	if password == "" {
 		c.ResponseJSON(constants.ParamErrorCode, "密码不可为空！", "")
 		return

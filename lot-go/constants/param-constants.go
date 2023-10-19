@@ -23,6 +23,8 @@ const TokenGenerateError = 10003
 // 系统异常，token生成失败
 const InsertUserError = 10004
 
+const TokenIsNullError = 10008
+
 // 系统异常,获取请求体参数失败
 const GainPostDataError = 10005
 

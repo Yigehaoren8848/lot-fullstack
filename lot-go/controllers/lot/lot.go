@@ -2,10 +2,10 @@ package lot
 
 import (
 	"encoding/json"
-	"github.com/beego/beego/v2/adapter/logs"
+	"github.com/astaxie/beego/orm"
 	"meilian/constants"
 	controller "meilian/controllers/base"
-
+	"meilian/models/equipment"
 	"meilian/models/mqtt"
 	"meilian/utils/jwt"
 )
@@ -64,21 +64,43 @@ func (c *LotController) ControlEquimpment() {
 		c.ResponseJSON(0, "params is error!", "")
 	}
 	var _ = c.MQTT.Publish("light", 0, false, msgJson)
-	logs.Info("" + "访问了日志接口")
-	//2.通知日志
-	logs.Notice("这是通知日志")
-	//3.警告日志
-	logs.Warn("这是警告日志")
-	//4.警告日志
-	logs.Alert("这是警告日志")
-	//5.错误日志
-	logs.Error("这是错误日志")
-	//6.重要的日志
-	logs.Critical("这是重要的日志")
-	//7.紧急日志
-	logs.Emergency("这是紧急日志")
-	//8.Debug日志
-	logs.Debug("这是调试日志")
 
 	c.ResponseJSON(2, "ok", msgs)
+}
+
+func (c *LotController) AddEquimpment() {
+	user := c.GetUser()
+	requestBody := c.Ctx.Input.RequestBody
+	equipModel := equipment.Equip{}
+	if user == nil {
+		c.ResponseJSON(constants.AuthError, "用户未登录", "")
+	}
+	err := json.Unmarshal(requestBody, &equipModel)
+	if err != nil {
+		c.ResponseJSON(constants.ParamErrorCode, "参数异常", "")
+	}
+	_, err = c.O.Insert(equipModel)
+	if err != nil {
+		c.ResponseJSON(constants.InsertError, "设备添加异常！", "")
+		return
+	}
+	c.ResponseJSON(constants.SuccessCode, "设备添加成功！", equipModel)
+
+}
+
+func (c *LotController) EquipList() {
+	page := c.GetString("page")
+	limit := c.GetString("page")
+	if page == "" || limit == "" {
+		c.ResponseJSON(constants.ParamErrorCode, "参数异常", "")
+		return
+	}
+	var listData []equipment.Equip
+	_, err := c.O.QueryTable("equip").Limit(page, limit).All(&listData)
+	if err != nil {
+		c.ResponseJSON(constants.QueryError, "查询失败", "")
+		return
+	}
+	c.ResponseJSON(constants.SuccessCode, "ok", listData)
+
 }

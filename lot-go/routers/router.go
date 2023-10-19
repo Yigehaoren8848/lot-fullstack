@@ -10,5 +10,7 @@ func init() {
 
 	web.Router("/ equipments/control", &lot.LotController{}, "GET:ControlEquimpment")
 	web.Router("/login", &controller.UserController{}, "post:Login")
+	web.Router("/register", &controller.UserController{}, "post:Register")
+	web.Router("/equipments/add", &lot.LotController{}, "GET:AddEquipEquimpment")
 	web.Router("/token", &lot.LotController{}, "GET:ResponseToken")
 }

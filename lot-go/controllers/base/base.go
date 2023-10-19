@@ -6,6 +6,8 @@ import (
 	"github.com/beego/beego/v2/server/web"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/google/uuid"
+	"meilian/models/sys/user"
+	"meilian/utils/jwt"
 )
 
 type BaseController struct {
@@ -53,6 +55,31 @@ func (c *BaseController) ResponseJSON(code int, msg string, data interface{}) {
 	c.ServeJSON()
 }
 
-func OnMqLostConnection() {
+// 通过token解析用户信息
+func (c *BaseController) GetUser() *user.User {
+	userModel := &user.User{}
+	token := c.Ctx.Input.Header("token")
+	if token == "" {
+		token = c.GetString("token")
+	}
+	if token == "" {
 
+		return nil
+	}
+	userClams, _ := jwt.ParseToken(token)
+	id := userClams["id"]
+	_ = c.O.QueryTable(new(user.User)).Filter("id", id).One(userModel)
+	return userModel
+}
+
+// 查询有topic用于程序启动时的订阅
+func (c *BaseController) getAllTopics() []orm.Params {
+	sql := " SELECT eq.topic FROM equip WHERE eq.delete = 0"
+	var topics []orm.Params
+	_, err := c.O.Raw(sql).Values(&topics)
+	if err != nil {
+		return nil
+
+	}
+	return topics
 }
