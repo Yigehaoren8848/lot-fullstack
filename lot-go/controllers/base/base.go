@@ -74,10 +74,11 @@ func (c *BaseController) GetUser() *user.User {
 
 // 查询有topic用于程序启动时的订阅
 func (c *BaseController) getAllTopics() []orm.Params {
-	sql := " SELECT eq.topic FROM equip WHERE eq.delete = 0"
+	sql := " SELECT eq.topic FROM equip eq WHERE eq.delete = 0"
 	var topics []orm.Params
 	_, err := c.O.Raw(sql).Values(&topics)
 	if err != nil {
+		print(err.Error())
 		return nil
 
 	}

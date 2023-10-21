@@ -2,7 +2,7 @@ package lot
 
 import (
 	"encoding/json"
-	"github.com/astaxie/beego/orm"
+
 	"meilian/constants"
 	controller "meilian/controllers/base"
 	"meilian/models/equipment"

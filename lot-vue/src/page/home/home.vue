@@ -5,7 +5,7 @@
       <div class="equipmen-wrap">
         <div class="equipme-item" :style="{ minHeight: height * 0.1 + 'px' }">
           <div class="t">
-            <div>插座</div>
+            <div>灯</div>
             <div   v-if=" msg != '上线' ">离线</div>
             <img
               style="
@@ -33,7 +33,7 @@
                 -moz-tap-highlight-color: transparent;
               "
               :style="{ height: height * 0.1 * 0.5 + 'px' }"
-              src="../../images/设备_插座 圆 线.png"
+              src="../../images/light.png"
               alt=""
             />
             
@@ -42,6 +42,7 @@
       </div>
       
     </div>
+    <btoNav></btoNav>
   </div>
 </template>
 
@@ -50,6 +51,7 @@ import head from "../head/head";
 import openIcon from "../../images/open.png";
 import closeIcon from "../../images/close.png";
 import fetch from "../../config/fetch";
+import btoNav from "../../page/bottom_nav/bottom_nav"
 import PahoMQTT from "paho-mqtt";
 import { getStore, setStore } from '../../config/mUtils';
 export default {
@@ -61,7 +63,7 @@ export default {
       open: false,
       msg: "",
       client: "",
-      
+      status:""
     };
   },
   watch: {
@@ -114,31 +116,35 @@ export default {
     initMqtt() {
       let that = this;
       let uniqueId = navigator.userAgent.replace(/[^\w]/gi, '');
-      const mqttClient = new Paho.MQTT.Client("192.168.1.169", 9002, uniqueId);
+      const mqttClient = new Paho.MQTT.Client("192.168.1.169", 9001, uniqueId);
       let i = 0;
-      // 创建接选项
+      
       const options = {
-        timeout: 3,
-        useSSL: false,
-        onSuccess: onConnect,
-        onFailure: onFailure,
-      };
+  timeout: 3,
+  useSSL: false,
+  keepAliveInterval:3,
+  onSuccess: onConnect,
+  onFailure: onFailure,
+ 
+};
 
       // 连接成功回调函数
       function onConnect() {
         console.log("连接成功");
         // 订阅主题
         mqttClient.subscribe("lw");
-        clearInterval(this.reconnectTimer)
+     
+        clearInterval(that.reconnectTimer)
+        
         this.open = true
       }
 
       // 连接失败回调函数
       function onFailure() {
         console.log("连接失败");
-        setInterval(function(){
-           	mqttClient.connect(options);
-           },3000)
+        // setInterval(function(){
+        //    	mqttClient.connect(options);
+        //    },3000)
       }
 
       // 接收消息回调函数
@@ -159,13 +165,12 @@ export default {
       // 设置消息接收回调函数
       mqttClient.onMessageArrived = onMessageReceived;
 
-      // 连接到MQTT代理
-      mqttClient.connect(options);
+     
       mqttClient.onConnectionLost = function (responseObject) {
         if(responseObject.errorCode !== 0) {
-           alert("连接已断开");
+          //  alert("连接已断开");
            this.open = false
-           this.reconnectTimer = setInterval(function(){
+           that.reconnectTimer = setInterval(function(){
            	mqttClient.connect({
                 cleanSession : true, 
                 onSuccess : onConnect, 
@@ -176,6 +181,8 @@ export default {
            },2000)
         }
     }
+     // 连接到MQTT代理
+     mqttClient.connect(options);
     },
 
     
@@ -210,6 +217,7 @@ export default {
   },
   components: {
     Head: head,
+    btoNav:btoNav
   },
   watch: {
     inputValue(newName, oldName) {

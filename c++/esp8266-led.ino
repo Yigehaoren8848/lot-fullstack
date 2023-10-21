@@ -19,8 +19,8 @@ const char* topic = "light";
 WiFiClient espClient;
 PubSubClient client(espClient);
 //控制继电器开关的引脚
-const int led = 0;
-const int esp_led = 0;
+const int led = 3;
+const int esp_led = 30;
 
 
 void sendMsg(String msg, String topicString, bool remain) {
@@ -29,6 +29,13 @@ void sendMsg(String msg, String topicString, bool remain) {
   client.publish(topic, msg.c_str(), remain);
 }
 
+bool connect(){
+  String willTopicString = "lw";
+  String willMsg = "离线";
+  char willTopic[willTopicString.length() + 1];
+  strcpy(willTopic, willTopicString.c_str());
+  return client.connect("esp8266_client442", willTopic, 0, true, willMsg.c_str());
+}
 
 void setup() {
   // 连接WiFi
@@ -50,22 +57,19 @@ void setup() {
   digitalWrite(LED_BUILTIN, LOW);
   //初始化引脚为低电平
   digitalWrite(led, HIGH);
-  String willTopicString = "lw";
-  String willMsg = "离线";
-  char willTopic[willTopicString.length() + 1];
-  strcpy(willTopic, willTopicString.c_str());
-  if (client.connect("esp8266_client442", willTopic, 0, true, willMsg.c_str())) {
+  
+  if (connect()) {
     // Serial.println("Connected to MQTT");
     // 订阅控制主题
     client.subscribe(topic);
-    // Serial.print("已订阅：");
-    // Serial.print(topic);
+    Serial.print("已订阅：");
+    Serial.print(topic);
     sendMsg("上线", "lw", true);
 
   } else {
-    // Serial.print("Failed, rc=");
-    // Serial.print(client.state());
-    // Serial.println(" Try again in 5 seconds");
+    Serial.print("Failed, rc=");
+    Serial.print(client.state());
+    Serial.println(" Try again in 5 seconds");
     delay(1000);
   }
 }
@@ -84,14 +88,16 @@ void loop() {
 void reconnect() {
   while (!client.connected()) {
     // Serial.println("Connecting to MQTT...");
-    if (client.connect("esp8266_client442")) {
+    if (connect()) {
       Serial.println("Connected to MQTT");
       // 订阅控制主题
       client.subscribe(topic);
       // Serial.print("已订阅：");
       // Serial.print(topic);
-      sendMsg("下线", "lw", true);
+       sendMsg("上线", "lw", true);
 
+    }else{
+      sendMsg("离线", "lw", true);
     }
   }
 }
@@ -121,9 +127,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
     const char* msg = doc["msg"];
     if (strcmp(msg, "on") == 0) {
       digitalWrite(LED_BUILTIN, LOW);
+      digitalWrite(led, LOW);
     }
     if (strcmp(msg, "off") == 0) {
       digitalWrite(LED_BUILTIN, HIGH);
+      digitalWrite(led, HIGH);
     }
   }
 }
